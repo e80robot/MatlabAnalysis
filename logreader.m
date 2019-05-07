@@ -4,9 +4,9 @@
 clear;
 %clf;
 
-folder = 'TempTest/';
+folder = 'danapoint/';
 % 12 goes underwater
-filenum = '001'; % file number for the data you want to read
+filenum = '112'; % file number for the data you want to read
 infofile = strcat(folder, 'INF', filenum, '.TXT');
 datafile = strcat(folder, 'LOG', filenum, '.BIN');
 
@@ -89,14 +89,21 @@ end
 
 %plot(t, yaw)
 %plot(t, headingIMU)
-floatData = cast(A01,'like', 'float');
-TempVoltage = (floatData./1024).*3.3;
-Temp = (1./(((log((10/47).*((5./TempVoltage)-1)))/4108)+(1/25)));
+floatTempData = cast(A01,'like', 'float');
+TempVoltage = (floatTempData./1024).*3.3;
+Temp = (1./(((log((10/47).*((3.3./TempVoltage)-1)))/4108)+(1/25)));
+Temp2 = (1./(((log((10/47)*((3.3)./TempVoltage - 1)))./4108)+(1/298)))-273;
+Temp3 = 8.89.*TempVoltage+4.01;
+floatPresData = cast(A00, 'like', 'float');
+presVoltage = (floatPresData./1024).*3.3;
+Press = (presVoltage+57.02)./0.5629;
 %plot(x, y)
+%xlim([-110 110]);
+%ylim([-110 110]);
 %ylim([-50 50])
 %plot(t, gyroZ)
 %figure(2)
-plot(t, Temp);
+plot(t, Temp3);
 %imshow("background.png");
 % xlabel("time");
 % ylabel("control effort");
