@@ -3,7 +3,6 @@
 
 clear;
 
-
 %clf;
 %filenum = sprintf('%03d', filenum);
 folder = 'danapoint/';
@@ -104,11 +103,13 @@ floatTempData = cast(A01,'like', 'float');
 TempVoltage = (floatTempData./1024).*3.3;
 Temp = (1./(((log((10/47).*((3.3./TempVoltage)-1)))/4108)+(1/25)));
 Temp2 = (1./(((log((10/47)*((3.3)./TempVoltage - 1)))./4108)+(1/298)))-273;
-Temp3 = 8.89.*TempVoltage+4.01;
+Temp3 = 8.89.*TempVoltage+4.03;
 floatPresData = cast(A00, 'like', 'float');
 presVoltage = (floatPresData./1024).*3.3;
 Press = (presVoltage+57.02)./0.5629;
 
+Depth = 0.753.*presVoltage+0.576;
+Depth2 = 0.753*presVoltage-.024;
 %plot(x, y)
 %xlim([-110 110]);
 %ylim([-110 110]);
@@ -116,6 +117,12 @@ Press = (presVoltage+57.02)./0.5629;
 %plot(t, gyroZ)
 %figure(2)
 
+plot(t, Temp3);
+title('BFS Temperature');
+%title('BFS Depth');
+xlabel('Time (s)');
+ylabel('Temperature (degC)');
+%ylabel('Depth (m)');
 %imshow("background.png");
 
 figure(1);
