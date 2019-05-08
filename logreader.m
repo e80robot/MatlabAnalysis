@@ -2,13 +2,23 @@
 % Use this script to read data from your micro SD card
 
 clear;
-%clf;
 
+
+%clf;
+%filenum = sprintf('%03d', filenum);
 folder = 'danapoint/';
 % 12 goes underwater
-filenum = '112'; % file number for the data you want to read
+% dana pt
+% 112 does something interesting
+% 118
+% 111?
+filenum = '107'; % file number for the data you want to read
+
 infofile = strcat(folder, 'INF', filenum, '.TXT');
 datafile = strcat(folder, 'LOG', filenum, '.BIN');
+
+times = [0 19.53126979 39.05863005 58.58864004 78.11975959 119.4470098 145.0101896 177.4602802 202.9978202 228.5351603 254.07254 304.7420694 404.3383099 429.8761297 455.4135703 480.9510299 507.66726 574.5993401];
+
 
 %% map from datatype to length in bytes
 dataSizes.('float') = 4;
@@ -54,7 +64,7 @@ fclose(fid);
 N = length(accelX);
 
 %convert sample number to time vector
-t = [0:0.1:N*0.1-0.1]';
+t = [0:0.05:N*0.05-0.05]';
 
 %converting to m/s^2 from accel units
 
@@ -89,6 +99,7 @@ end
 
 %plot(t, yaw)
 %plot(t, headingIMU)
+
 floatTempData = cast(A01,'like', 'float');
 TempVoltage = (floatTempData./1024).*3.3;
 Temp = (1./(((log((10/47).*((3.3./TempVoltage)-1)))/4108)+(1/25)));
@@ -97,19 +108,60 @@ Temp3 = 8.89.*TempVoltage+4.01;
 floatPresData = cast(A00, 'like', 'float');
 presVoltage = (floatPresData./1024).*3.3;
 Press = (presVoltage+57.02)./0.5629;
+
 %plot(x, y)
 %xlim([-110 110]);
 %ylim([-110 110]);
 %ylim([-50 50])
 %plot(t, gyroZ)
 %figure(2)
-plot(t, Temp3);
+
 %imshow("background.png");
+
+figure(1);
+imshow("danacove.jpg");
+hold on;
+
+%pixels per meter scaling factor
+ppm = 3.2786885246;
+
+%plot(x*ppm+2100, 1800-y*ppm, 'r');
+plot(1750-y*ppm, 2150+x*ppm, 'r');
+
+xa = []
+ya = []
+for i=times
+    [minValue,index] = min(abs(i-t'));
+    xa = [xa, x(index)];
+    ya = [ya, y(index)];
+end
+xa
+ya
+
+plot(1750-ya*ppm, 2150+xa*ppm, 'b*');
+%xlim([-100, 100]);
+%ylim([-100, 100]);
+%imageName = strcat(folder, 'IMGMAP', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
+
+figure(2);
+plot(t, Temp);
+%imageName = strcat(folder, 'IMGTEMP', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
+
+figure(3);
+plot(t, A00);
+%imageName = strcat(folder, 'IMGDEPTH', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
 % xlabel("time");
 % ylabel("control effort");
 %%
 
-
-
+function y = constrain(x,low,high)
+  y=min(max(x,low),high);
+end
 
 
