@@ -4,9 +4,9 @@
 clear;
 %clf;
 
-folder = 'danapoint/';
+folder = 'bfs/';
 % 12 goes underwater
-filenum = '118'; % file number for the data you want to read
+filenum = '018'; % file number for the data you want to read
 infofile = strcat(folder, 'INF', filenum, '.TXT');
 datafile = strcat(folder, 'LOG', filenum, '.BIN');
 
@@ -98,6 +98,7 @@ floatPresData = cast(A00, 'like', 'float');
 presVoltage = (floatPresData./1024).*3.3;
 Press = (presVoltage+57.02)./0.5629;
 Depth = 0.753.*presVoltage+0.576;
+Depth2 = 0.753*presVoltage-.024;
 %plot(x, y)
 %xlim([-110 110]);
 %ylim([-110 110]);
@@ -105,9 +106,11 @@ Depth = 0.753.*presVoltage+0.576;
 %plot(t, gyroZ)
 %figure(2)
 plot(t, Temp3);
-title('Run 1 Temperature');
+title('BFS Temperature');
+%title('BFS Depth');
 xlabel('Time (s)');
 ylabel('Temperature (degC)');
+%ylabel('Depth (m)');
 %imshow("background.png");
 % xlabel("time");
 % ylabel("control effort");
