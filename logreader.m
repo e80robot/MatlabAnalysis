@@ -2,11 +2,16 @@
 % Use this script to read data from your micro SD card
 
 clear;
-%clf;
 
-folder = 'TempTest/';
+%clf;
+%filenum = sprintf('%03d', filenum);
+folder = 'danapoint/';
 % 12 goes underwater
-filenum = '001'; % file number for the data you want to read
+% dana pt
+% 112 does something interesting
+% 118
+% 111?
+filenum = '120'; % file number for the data you want to read
 infofile = strcat(folder, 'INF', filenum, '.TXT');
 datafile = strcat(folder, 'LOG', filenum, '.BIN');
 
@@ -89,20 +94,45 @@ end
 
 %plot(t, yaw)
 %plot(t, headingIMU)
-floatData = cast(A01,'like', 'float');
-TempVoltage = (floatData./1024).*3.3;
+tempData = cast(A01,'like', 'float');
+TempVoltage = (tempData./1024).*3.3;
 Temp = (1./(((log((10/47).*((5./TempVoltage)-1)))/4108)+(1/25)));
 %plot(x, y)
 %ylim([-50 50])
 %plot(t, gyroZ)
 %figure(2)
+
+figure(1);
+imshow("danacove.jpg");
+hold on;
+
+%pixels per meter scaling factor
+ppm = 3.2786885246;
+
+plot(x*ppm+2000, 1700-y*ppm, 'r');
+%xlim([-100, 100]);
+%ylim([-100, 100]);
+%imageName = strcat(folder, 'IMGMAP', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
+
+figure(2);
 plot(t, Temp);
-%imshow("background.png");
+%imageName = strcat(folder, 'IMGTEMP', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
+
+figure(3);
+plot(t, A00);
+%imageName = strcat(folder, 'IMGDEPTH', filenum, '.png');
+%saveas(gcf,imageName)
+%close()
 % xlabel("time");
 % ylabel("control effort");
 %%
 
-
-
+function y = constrain(x,low,high)
+  y=min(max(x,low),high);
+end
 
 
